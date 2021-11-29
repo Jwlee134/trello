@@ -7,6 +7,7 @@ import {
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
+import DraggableCard from "./components/DraggableCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,13 +33,6 @@ const Board = styled.div`
   background-color: ${({ theme }) => theme.boardColor};
 `;
 
-const Card = styled.div`
-  border-radius: 5px;
-  padding: 10px 10px;
-  margin-bottom: 5px;
-  background-color: ${({ theme }) => theme.cardColor};
-`;
-
 function App() {
   const [toDos, setTodos] = useRecoilState(toDoState);
 
@@ -60,17 +54,7 @@ function App() {
             {(props) => (
               <Board ref={props.innerRef} {...props.droppableProps}>
                 {toDos.map((toDo, index) => (
-                  <Draggable key={toDo} draggableId={toDo} index={index}>
-                    {(props) => (
-                      <Card
-                        ref={props.innerRef}
-                        {...props.dragHandleProps}
-                        {...props.draggableProps}
-                      >
-                        {toDo}
-                      </Card>
-                    )}
-                  </Draggable>
+                  <DraggableCard key={toDo} toDo={toDo} index={index} />
                 ))}
                 {props.placeholder}
               </Board>
