@@ -34,6 +34,18 @@ function App() {
         copy.splice(destination.index, 0, draggableId);
         return { ...prev, [source.droppableId]: copy };
       });
+    } else {
+      setTodos((prev) => {
+        const sourceBoardCopy = [...prev[source.droppableId]];
+        const destinationBoardCopy = [...prev[destination.droppableId]];
+        sourceBoardCopy.splice(source.index, 1);
+        destinationBoardCopy.splice(destination.index, 0, draggableId);
+        return {
+          ...prev,
+          [source.droppableId]: sourceBoardCopy,
+          [destination.droppableId]: destinationBoardCopy,
+        };
+      });
     }
     /* setTodos((prev) => {
       const copy = JSON.parse(JSON.stringify(prev));
