@@ -25,34 +25,29 @@ function App() {
   const [toDos, setTodos] = useRecoilState(toDoState);
 
   const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    console.log(draggableId, destination, source);
     if (!destination) return;
-    if (destination.droppableId === source.droppableId) {
+    if (source.droppableId === destination.droppableId) {
       setTodos((prev) => {
-        const copy = [...prev[source.droppableId]];
-        copy.splice(source.index, 1);
-        copy.splice(destination.index, 0, draggableId);
-        return { ...prev, [source.droppableId]: copy };
+        const sourceBoard = [...prev[source.droppableId]];
+        const targetObj = sourceBoard[source.index];
+        sourceBoard.splice(source.index, 1);
+        sourceBoard.splice(destination.index, 0, targetObj);
+        return { ...prev, [source.droppableId]: sourceBoard };
       });
     } else {
       setTodos((prev) => {
-        const sourceBoardCopy = [...prev[source.droppableId]];
-        const destinationBoardCopy = [...prev[destination.droppableId]];
-        sourceBoardCopy.splice(source.index, 1);
-        destinationBoardCopy.splice(destination.index, 0, draggableId);
+        const sourceBoard = [...prev[source.droppableId]];
+        const destinationBoard = [...prev[destination.droppableId]];
+        const targetObj = sourceBoard[source.index];
+        sourceBoard.splice(source.index, 1);
+        destinationBoard.splice(destination.index, 0, targetObj);
         return {
           ...prev,
-          [source.droppableId]: sourceBoardCopy,
-          [destination.droppableId]: destinationBoardCopy,
+          [source.droppableId]: sourceBoard,
+          [destination.droppableId]: destinationBoard,
         };
       });
     }
-    /* setTodos((prev) => {
-      const copy = JSON.parse(JSON.stringify(prev));
-      copy[source.droppableId].splice(source.index, 1);
-      copy[destination.droppableId].splice(destination.index, 0, draggableId);
-      return copy;
-    }); */
   };
 
   return (

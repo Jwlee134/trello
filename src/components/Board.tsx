@@ -1,5 +1,7 @@
 import { Droppable } from "react-beautiful-dnd";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { ToDo } from "../atoms";
 import DraggableCard from "./DraggableCard";
 
 interface AreaProps {
@@ -37,15 +39,37 @@ const Area = styled.div<AreaProps>`
   padding: 20px;
 `;
 
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
+`;
+
+interface FormProps {
+  toDo: ToDo;
+}
+
 interface Props {
-  toDos: string[];
+  toDos: ToDo[];
   boardId: string;
 }
 
 function Board({ toDos, boardId }: Props) {
+  const { register, setValue, handleSubmit } = useForm<FormProps>();
+
+  const onValid = ({ toDo }: FormProps) => {};
+
   return (
     <Wrapper>
       <Title>{boardId}</Title>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("toDo", { required: true })}
+          type="text"
+          placeholder={`Add task on ${boardId}`}
+        />
+      </Form>
       <Droppable droppableId={boardId}>
         {(magic, { isDraggingOver, draggingFromThisWith }) => (
           <Area
@@ -55,7 +79,7 @@ function Board({ toDos, boardId }: Props) {
             {...magic.droppableProps}
           >
             {toDos.map((toDo, index) => (
-              <DraggableCard key={toDo} index={index} toDo={toDo} />
+              <DraggableCard key={toDo.id} index={index} toDo={toDo} />
             ))}
             {magic.placeholder}
           </Area>
